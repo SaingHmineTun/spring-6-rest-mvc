@@ -17,6 +17,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -148,8 +149,8 @@ class BeerControllerTest {
 
     @Test
     void test_updatePatchBeer() throws Exception {
-        Beer beerToSend = Beer.builder().beerName("Dagon").build();
-        String beerJson = objectMapper.writeValueAsString(beerToSend);
+        Map<String, String> beerMap = Map.of("beerName", "Lolita");
+        String beerJson = objectMapper.writeValueAsString(beerMap);
 
         given(beerService.updateBeerContentById(any(UUID.class), any(Beer.class))).willReturn(true);
 
