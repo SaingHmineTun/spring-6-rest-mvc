@@ -7,8 +7,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import org.springframework.web.util.UriBuilder;
-import org.springframework.web.util.UriBuilderFactory;
 
 import java.net.URI;
 import java.util.List;
@@ -25,17 +23,17 @@ public class BeerController {
     private final BeerService beerService;
 
     @GetMapping
-    public List<Beer> listBeers(){
-        return beerService.listBeers();
+    public ResponseEntity<List<Beer>> listBeers() {
+        return ResponseEntity.ok(beerService.listBeers());
     }
 
     @GetMapping("/{beerId}")
-    public Beer getBeerById(@PathVariable("beerId") UUID id){
-
-        log.debug("Get Beer by Id - in controller");
-
-        return beerService.getBeerById(id);
+    public ResponseEntity<Beer> getBeerById(@PathVariable("beerId") UUID id) {
+        Beer existingBeer = beerService.getBeerById(id);
+        if (existingBeer != null) return ResponseEntity.ok(beerService.getBeerById(id));
+        return ResponseEntity.notFound().build();
     }
+
 
     @PostMapping
     public ResponseEntity<URI> createNewBear(@RequestBody Beer beer) {
@@ -50,8 +48,22 @@ public class BeerController {
 
     @PutMapping("/{beerId}")
     public ResponseEntity<URI> updateBeerById(@PathVariable("beerId") UUID id, @RequestBody Beer beer) {
-        beerService.updateBeer(id, beer);
+        boolean isUpdated = beerService.updateBeer(id, beer);
+        if (isUpdated) return ResponseEntity.noContent().build();
+        return ResponseEntity.notFound().build();
+    }
+
+    @PatchMapping("/{beerId}")
+    public ResponseEntity<Void> updateBeerContentById(@PathVariable("beerId") UUID uuid, @RequestBody Beer beer) {
+        beerService.updateBeerContentById(uuid, beer);
         return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("{beerId}")
+    public ResponseEntity<Void> deleteBeerById(@PathVariable("beerId") UUID uuid) {
+        boolean isDeleted = beerService.deleteBeerById(uuid);
+        if (isDeleted) ResponseEntity.noContent().build();
+        return ResponseEntity.notFound().build();
     }
 
 }

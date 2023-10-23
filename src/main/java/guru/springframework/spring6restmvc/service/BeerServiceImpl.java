@@ -96,14 +96,52 @@ public class BeerServiceImpl implements BeerService {
     }
 
     @Override
-    public void updateBeer(UUID id, Beer beer) {
+    public boolean updateBeer(UUID id, Beer beer) {
         Beer updatedBeer = beerMap.get(id);
-        updatedBeer.setBeerName(beer.getBeerName());
-        updatedBeer.setBeerStyle(beer.getBeerStyle());
-        updatedBeer.setPrice(beer.getPrice());
-        updatedBeer.setUpc(beer.getUpc());
-        updatedBeer.setQuantityOnHand(beer.getQuantityOnHand());
-        updatedBeer.setUpdateDate(LocalDateTime.now());
-        beerMap.put(id, updatedBeer);
+        if (updatedBeer != null) {
+            updatedBeer.setBeerName(beer.getBeerName());
+            updatedBeer.setBeerStyle(beer.getBeerStyle());
+            updatedBeer.setPrice(beer.getPrice());
+            updatedBeer.setUpc(beer.getUpc());
+            updatedBeer.setQuantityOnHand(beer.getQuantityOnHand());
+            updatedBeer.setUpdateDate(LocalDateTime.now());
+            beerMap.put(id, updatedBeer);
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean deleteBeerById(UUID uuid) {
+        Beer toDeleteBeer = getBeerById(uuid);
+        if (toDeleteBeer != null) {
+            beerMap.remove(uuid);
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean updateBeerContentById(UUID uuid, Beer beer) {
+        Beer existingBeer = beerMap.get(uuid);
+        if (existingBeer != null) {
+            if (beer.getBeerName() != null) {
+                existingBeer.setBeerName(beer.getBeerName());
+            }
+            if (beer.getBeerStyle() != null) {
+                existingBeer.setBeerStyle(beer.getBeerStyle());
+            }
+            if (beer.getPrice() != null) {
+                existingBeer.setPrice(beer.getPrice());
+            }
+            if (beer.getQuantityOnHand() != null) {
+                existingBeer.setQuantityOnHand(beer.getQuantityOnHand());
+            }
+            if (beer.getUpc() != null) {
+                existingBeer.setQuantityOnHand(beer.getQuantityOnHand());
+            }
+            beerMap.put(uuid, existingBeer);
+        }
+        return false;
     }
 }
