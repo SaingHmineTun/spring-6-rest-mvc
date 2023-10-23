@@ -8,6 +8,7 @@ import guru.springframework.spring6restmvc.service.BeerService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -147,15 +148,17 @@ class BeerControllerTest {
 
     }
 
+    @Captor
+    ArgumentCaptor<UUID> uuidArgumentCaptor;
+    @Captor
+    ArgumentCaptor<Beer> beerArgumentCaptor;
+
     @Test
     void test_updatePatchBeer() throws Exception {
         Map<String, String> beerMap = Map.of("beerName", "Lolita");
         String beerJson = objectMapper.writeValueAsString(beerMap);
 
         UUID uuid = UUID.randomUUID();
-
-        ArgumentCaptor<UUID> uuidArgumentCaptor = ArgumentCaptor.forClass(UUID.class);
-        ArgumentCaptor<Beer> beerArgumentCaptor = ArgumentCaptor.forClass(Beer.class);
 
         given(beerService.updateBeerContentById(any(UUID.class), any(Beer.class))).willReturn(true);
 
