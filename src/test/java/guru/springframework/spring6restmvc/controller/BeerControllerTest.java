@@ -5,9 +5,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import guru.springframework.spring6restmvc.model.Beer;
 import guru.springframework.spring6restmvc.model.BeerStyle;
 import guru.springframework.spring6restmvc.service.BeerService;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -19,11 +19,12 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.mockito.Mockito.verify;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(BeerController.class)
@@ -102,5 +103,62 @@ class BeerControllerTest {
                 .andExpect(header().exists("location"));
 
     }
+
+    @Test
+    void test_updateBeer() throws Exception {
+        given(beerService.updateBeer(any(UUID.class), any(Beer.class))).willReturn(true);
+
+        mockMvc.perform(put("/api/v1/beer/{beerId}", UUID.randomUUID())
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(beer)))
+                .andExpect(status().isNoContent());
+
+    }
+
+    @Test
+    void test_updateBeer_notFound() throws Exception {
+        given(beerService.updateBeer(any(UUID.class), any(Beer.class))).willReturn(false);
+
+        mockMvc.perform(put("/api/v1/beer/{beerId}", UUID.randomUUID())
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(beer)))
+                .andExpect(status().isNotFound());
+
+    }
+
+    @Test
+    void test_deleteBeer() throws Exception {
+
+        UUID arg = UUID.randomUUID();
+
+        given(beerService.deleteBeerById(any(UUID.class))).willReturn(true);
+
+        mockMvc.perform(delete("/api/v1/beer/{beerId}", arg)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNoContent());
+
+        ArgumentCaptor<UUID> argumentCaptor = ArgumentCaptor.forClass(UUID.class);
+        verify(beerService).deleteBeerById(argumentCaptor.capture());
+
+        assertThat(argumentCaptor.getValue()).isEqualTo(arg);
+
+    }
+
+    @Test
+    void test_updatePatchBeer() throws Exception {
+        Beer beerToSend = Beer.builder().beerName("Dagon").build();
+        String beerJson = objectMapper.writeValueAsString(beerToSend);
+
+        given(beerService.updateBeerContentById(any(UUID.class), any(Beer.class))).willReturn(true);
+
+        mockMvc.perform(patch("/api/v1/beer/{beerId}", UUID.randomUUID())
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(beerJson))
+                .andExpect(status().isNoContent());
+    }
+
 
 }
