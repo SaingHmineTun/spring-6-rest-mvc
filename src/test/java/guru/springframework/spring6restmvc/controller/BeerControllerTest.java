@@ -152,13 +152,23 @@ class BeerControllerTest {
         Map<String, String> beerMap = Map.of("beerName", "Lolita");
         String beerJson = objectMapper.writeValueAsString(beerMap);
 
+        UUID uuid = UUID.randomUUID();
+
+        ArgumentCaptor<UUID> uuidArgumentCaptor = ArgumentCaptor.forClass(UUID.class);
+        ArgumentCaptor<Beer> beerArgumentCaptor = ArgumentCaptor.forClass(Beer.class);
+
         given(beerService.updateBeerContentById(any(UUID.class), any(Beer.class))).willReturn(true);
 
-        mockMvc.perform(patch("/api/v1/beer/{beerId}", UUID.randomUUID())
+        mockMvc.perform(patch("/api/v1/beer/{beerId}", uuid)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(beerJson))
                 .andExpect(status().isNoContent());
+
+        verify(beerService).updateBeerContentById(uuidArgumentCaptor.capture(), beerArgumentCaptor.capture());
+        assertThat(uuidArgumentCaptor.getValue()).isEqualTo(uuid);
+        assertThat(beerArgumentCaptor.getValue().getBeerName()).isEqualTo(beerMap.get("beerName"));
+
     }
 
 
