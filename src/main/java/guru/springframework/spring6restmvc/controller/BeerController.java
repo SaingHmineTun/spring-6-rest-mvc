@@ -48,4 +48,10 @@ public class BeerController {
         return ResponseEntity.created(location).build();
     }
 
+    @PutMapping("/{beerId}")
+    public ResponseEntity<URI> updateBeerById(@PathVariable("beerId") UUID id, @RequestBody Beer beer) {
+        beerService.updateBeer(id, beer);
+        return ResponseEntity.noContent().build();
+    }
+
 }
