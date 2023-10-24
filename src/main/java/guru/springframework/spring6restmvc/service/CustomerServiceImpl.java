@@ -1,5 +1,6 @@
 package guru.springframework.spring6restmvc.service;
 
+import guru.springframework.spring6restmvc.controller.NotFoundException;
 import guru.springframework.spring6restmvc.model.Customer;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -57,7 +58,8 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public void deleteCustomerById(UUID customerId) {
-        customerMap.remove(customerId);
+        Customer customer = getCustomerById(customerId).orElseThrow(NotFoundException::new);
+        customerMap.remove(customer.getId());
     }
 
     @Override
@@ -83,8 +85,8 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public Customer getCustomerById(UUID uuid) {
-        return customerMap.get(uuid);
+    public Optional<Customer> getCustomerById(UUID uuid) {
+        return Optional.ofNullable(customerMap.get(uuid));
     }
 
     @Override

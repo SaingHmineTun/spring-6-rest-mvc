@@ -18,6 +18,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 import static guru.springframework.spring6restmvc.controller.BeerController.BEER_PATH;
@@ -48,7 +49,7 @@ class BeerControllerTest {
     void test_getBeerById() throws Exception {
 
 
-        given(beerService.getBeerById(any(UUID.class))).willReturn(Beer.builder().id(UUID.randomUUID()).beerName("Change").build());
+        given(beerService.getBeerById(any(UUID.class))).willReturn(Optional.of(Beer.builder().id(UUID.randomUUID()).beerName("Change").build()));
 
         mockMvc.perform(get(BEER_PATH_ID, UUID.randomUUID())
                         .accept(MediaType.APPLICATION_JSON))
@@ -60,7 +61,7 @@ class BeerControllerTest {
     @Test
     void test_getBeerById_ThrowNotFoundException() throws Exception {
 
-        given(beerService.getBeerById(any(UUID.class))).willThrow(NotFoundException.class);
+        given(beerService.getBeerById(any(UUID.class))).willReturn(Optional.empty());
 
         mockMvc.perform(get(BEER_PATH_ID, UUID.randomUUID()))
                 .andExpect(status().isNotFound());

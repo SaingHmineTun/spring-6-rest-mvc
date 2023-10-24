@@ -1,5 +1,6 @@
 package guru.springframework.spring6restmvc.service;
 
+import guru.springframework.spring6restmvc.controller.NotFoundException;
 import guru.springframework.spring6restmvc.model.Beer;
 import guru.springframework.spring6restmvc.model.BeerStyle;
 import lombok.extern.slf4j.Slf4j;
@@ -68,11 +69,11 @@ public class BeerServiceImpl implements BeerService {
     }
 
     @Override
-    public Beer getBeerById(UUID id) {
+    public Optional<Beer> getBeerById(UUID id) {
 
         log.debug("Get Beer by Id - in service. Id: " + id.toString());
 
-        return beerMap.get(id);
+        return Optional.ofNullable(beerMap.get(id));
     }
 
     @Override
@@ -113,7 +114,7 @@ public class BeerServiceImpl implements BeerService {
 
     @Override
     public boolean deleteBeerById(UUID uuid) {
-        Beer toDeleteBeer = getBeerById(uuid);
+        Beer toDeleteBeer = getBeerById(uuid).orElseThrow(NotFoundException::new);
         if (toDeleteBeer != null) {
             beerMap.remove(uuid);
             return true;
