@@ -37,7 +37,7 @@ public class BeerController {
         return ResponseEntity.notFound().build();
     }
 
-    @ExceptionHandler(BeerNotFoundException.class)
+    @ExceptionHandler(NotFoundException.class)
     public ResponseEntity<Void> throwNotFoundException() {
         return ResponseEntity.notFound().build();
     }

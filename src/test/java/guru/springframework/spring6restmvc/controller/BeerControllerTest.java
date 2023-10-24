@@ -1,6 +1,5 @@
 package guru.springframework.spring6restmvc.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import guru.springframework.spring6restmvc.model.Beer;
 import guru.springframework.spring6restmvc.model.BeerStyle;
@@ -61,7 +60,7 @@ class BeerControllerTest {
     @Test
     void test_getBeerById_ThrowNotFoundException() throws Exception {
 
-        given(beerService.getBeerById(any(UUID.class))).willThrow(BeerNotFoundException.class);
+        given(beerService.getBeerById(any(UUID.class))).willThrow(NotFoundException.class);
 
         mockMvc.perform(get(BEER_PATH_ID, UUID.randomUUID()))
                 .andExpect(status().isNotFound());
