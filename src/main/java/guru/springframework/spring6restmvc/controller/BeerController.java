@@ -1,6 +1,6 @@
 package guru.springframework.spring6restmvc.controller;
 
-import guru.springframework.spring6restmvc.model.Beer;
+import guru.springframework.spring6restmvc.model.BeerDTO;
 import guru.springframework.spring6restmvc.service.BeerService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,19 +26,19 @@ public class BeerController {
     private final BeerService beerService;
 
     @GetMapping(BEER_PATH)
-    public ResponseEntity<List<Beer>> listBeers() {
+    public ResponseEntity<List<BeerDTO>> listBeers() {
         return ResponseEntity.ok(beerService.listBeers());
     }
 
     @GetMapping(BEER_PATH_ID)
-    public ResponseEntity<Beer> getBeerById(@PathVariable("beerId") UUID id) {
-        Beer beer = beerService.getBeerById(id).orElseThrow(NotFoundException::new);
+    public ResponseEntity<BeerDTO> getBeerById(@PathVariable("beerId") UUID id) {
+        BeerDTO beer = beerService.getBeerById(id).orElseThrow(NotFoundException::new);
         return ResponseEntity.ok(beer);
     }
 
     @PostMapping(BEER_PATH)
-    public ResponseEntity<URI> createNewBear(@RequestBody Beer beer) {
-        Beer addedBeer = beerService.addBeer(beer);
+    public ResponseEntity<URI> createNewBear(@RequestBody BeerDTO beer) {
+        BeerDTO addedBeer = beerService.addBeer(beer);
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{id}")
@@ -48,14 +48,14 @@ public class BeerController {
     }
 
     @PutMapping(BEER_PATH_ID)
-    public ResponseEntity<URI> updateBeerById(@PathVariable("beerId") UUID id, @RequestBody Beer beer) {
+    public ResponseEntity<URI> updateBeerById(@PathVariable("beerId") UUID id, @RequestBody BeerDTO beer) {
         boolean isUpdated = beerService.updateBeer(id, beer);
         if (isUpdated) return ResponseEntity.noContent().build();
         return ResponseEntity.notFound().build();
     }
 
     @PatchMapping(BEER_PATH_ID)
-    public ResponseEntity<Void> updateBeerContentById(@PathVariable("beerId") UUID uuid, @RequestBody Beer beer) {
+    public ResponseEntity<Void> updateBeerContentById(@PathVariable("beerId") UUID uuid, @RequestBody BeerDTO beer) {
         if (beerService.updateBeerContentById(uuid, beer)) return ResponseEntity.noContent().build();
         return ResponseEntity.notFound().build();
     }

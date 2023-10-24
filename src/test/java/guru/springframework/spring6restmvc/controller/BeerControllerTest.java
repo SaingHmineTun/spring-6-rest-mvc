@@ -1,7 +1,7 @@
 package guru.springframework.spring6restmvc.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import guru.springframework.spring6restmvc.model.Beer;
+import guru.springframework.spring6restmvc.model.BeerDTO;
 import guru.springframework.spring6restmvc.model.BeerStyle;
 import guru.springframework.spring6restmvc.service.BeerService;
 import org.junit.jupiter.api.BeforeEach;
@@ -43,13 +43,13 @@ class BeerControllerTest {
     // Spring will configure the best options for you!
     @Autowired
     ObjectMapper objectMapper;
-    Beer beer;
+    BeerDTO beer;
 
     @Test
     void test_getBeerById() throws Exception {
 
 
-        given(beerService.getBeerById(any(UUID.class))).willReturn(Optional.of(Beer.builder().id(UUID.randomUUID()).beerName("Change").build()));
+        given(beerService.getBeerById(any(UUID.class))).willReturn(Optional.of(BeerDTO.builder().id(UUID.randomUUID()).beerName("Change").build()));
 
         mockMvc.perform(get(BEER_PATH_ID, UUID.randomUUID())
                         .accept(MediaType.APPLICATION_JSON))
@@ -82,7 +82,7 @@ class BeerControllerTest {
 
     @BeforeEach
     void initAll() {
-        beer = Beer.builder()
+        beer = BeerDTO.builder()
                 .id(UUID.randomUUID())
                 .beerName("Dagon")
                 .beerStyle(BeerStyle.PALE_ALE)
@@ -99,14 +99,14 @@ class BeerControllerTest {
 
         // When sent request, don't need to have id, version, created and updated
         // These will be automatically assigned by the controller
-        Beer beerToSend = beer;
+        BeerDTO beerToSend = beer;
         beerToSend.setId(null);
         beerToSend.setVersion(null);
         beerToSend.setCreatedDate(null);
         beerToSend.setUpdateDate(null);
         String beerJson = objectMapper.writeValueAsString(beerToSend);
 
-        given(beerService.addBeer(any(Beer.class))).willReturn(beer);
+        given(beerService.addBeer(any(BeerDTO.class))).willReturn(beer);
 
         mockMvc.perform(post(BEER_PATH)
                 .accept(MediaType.APPLICATION_JSON)
@@ -119,7 +119,7 @@ class BeerControllerTest {
 
     @Test
     void test_updateBeer() throws Exception {
-        given(beerService.updateBeer(any(UUID.class), any(Beer.class))).willReturn(true);
+        given(beerService.updateBeer(any(UUID.class), any(BeerDTO.class))).willReturn(true);
 
         mockMvc.perform(put(BEER_PATH_ID, UUID.randomUUID())
                         .accept(MediaType.APPLICATION_JSON)
@@ -131,7 +131,7 @@ class BeerControllerTest {
 
     @Test
     void test_updateBeer_notFound() throws Exception {
-        given(beerService.updateBeer(any(UUID.class), any(Beer.class))).willReturn(false);
+        given(beerService.updateBeer(any(UUID.class), any(BeerDTO.class))).willReturn(false);
 
         mockMvc.perform(put(BEER_PATH_ID, UUID.randomUUID())
                         .accept(MediaType.APPLICATION_JSON)
@@ -162,7 +162,7 @@ class BeerControllerTest {
     @Captor
     ArgumentCaptor<UUID> uuidArgumentCaptor;
     @Captor
-    ArgumentCaptor<Beer> beerArgumentCaptor;
+    ArgumentCaptor<BeerDTO> beerArgumentCaptor;
 
     @Test
     void test_updatePatchBeer() throws Exception {
@@ -171,7 +171,7 @@ class BeerControllerTest {
 
         UUID uuid = UUID.randomUUID();
 
-        given(beerService.updateBeerContentById(any(UUID.class), any(Beer.class))).willReturn(true);
+        given(beerService.updateBeerContentById(any(UUID.class), any(BeerDTO.class))).willReturn(true);
 
         mockMvc.perform(patch(BEER_PATH_ID, uuid)
                         .accept(MediaType.APPLICATION_JSON)
