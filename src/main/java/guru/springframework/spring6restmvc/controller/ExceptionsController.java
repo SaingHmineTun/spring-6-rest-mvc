@@ -4,11 +4,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
-@ControllerAdvice
+//@ControllerAdvice
 public class ExceptionsController {
-
-    @ExceptionHandler(NotFoundException.class)
-    public ResponseEntity<Void> notFoundException() {
+//    @ExceptionHandler(NotFoundException.class)
+    public ResponseEntity<Void> throwNotFoundException() {
         return ResponseEntity.notFound().build();
     }
 

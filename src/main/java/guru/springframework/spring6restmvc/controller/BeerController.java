@@ -33,14 +33,15 @@ public class BeerController {
     @GetMapping(BEER_PATH_ID)
     public ResponseEntity<Beer> getBeerById(@PathVariable("beerId") UUID id) {
         Beer existingBeer = beerService.getBeerById(id);
-        if (existingBeer != null) return ResponseEntity.ok(beerService.getBeerById(id));
-        return ResponseEntity.notFound().build();
+//        if (existingBeer != null)
+            return ResponseEntity.ok(beerService.getBeerById(id));
+//        return ResponseEntity.notFound().build();
     }
 
-    @ExceptionHandler(NotFoundException.class)
-    public ResponseEntity<Void> throwNotFoundException() {
-        return ResponseEntity.notFound().build();
-    }
+//    @ExceptionHandler(NotFoundException.class)
+//    public ResponseEntity<Void> throwNotFoundException() {
+//        return ResponseEntity.notFound().build();
+//    }
 
 
     @PostMapping(BEER_PATH)
