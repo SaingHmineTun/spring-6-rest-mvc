@@ -37,6 +37,11 @@ public class BeerController {
         return ResponseEntity.notFound().build();
     }
 
+    @ExceptionHandler(BeerNotFoundException.class)
+    public ResponseEntity<Void> throwNotFoundException() {
+        return ResponseEntity.notFound().build();
+    }
+
 
     @PostMapping(BEER_PATH)
     public ResponseEntity<URI> createNewBear(@RequestBody Beer beer) {
