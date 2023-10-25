@@ -99,6 +99,8 @@ class BeerControllerIT {
         assertThat(beerDTO1).isNotNull();
     }
 
+    @Rollback
+    @Transactional
     @Test
     void test_updateBeer() {
 
@@ -120,5 +122,12 @@ class BeerControllerIT {
         assertThat(updatedBeer.getBeerName()).isEqualTo(beerName);
         assertThat(updatedBeer.getUpdateDate()).isNotNull();
 
+    }
+
+    @Test
+    void test_updateBeer_NotFound() {
+        assertThrows(NotFoundException.class, () -> {
+            beerController.updateBeerById(UUID.randomUUID(), BeerDTO.builder().build());
+        });
     }
 }

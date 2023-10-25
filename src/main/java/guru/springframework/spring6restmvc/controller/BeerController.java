@@ -64,7 +64,7 @@ public class BeerController {
     public ResponseEntity<Void> deleteBeerById(@PathVariable("beerId") UUID uuid) {
         boolean isDeleted = beerService.deleteBeerById(uuid);
         if (isDeleted) return ResponseEntity.noContent().build();
-        return ResponseEntity.notFound().build();
+        throw new NotFoundException();
     }
 
 }

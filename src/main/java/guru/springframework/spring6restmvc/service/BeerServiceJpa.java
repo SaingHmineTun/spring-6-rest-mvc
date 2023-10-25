@@ -55,11 +55,12 @@ public class BeerServiceJpa implements BeerService {
 
     @Override
     public boolean deleteBeerById(UUID uuid) {
+        AtomicBoolean atomicBoolean = new AtomicBoolean(false);
         if (getBeerById(uuid).isPresent()) {
             beerRepository.deleteById(uuid);
-            return true;
+            atomicBoolean.set(true);
         }
-        return false;
+        return atomicBoolean.get();
     }
 
     @Override
