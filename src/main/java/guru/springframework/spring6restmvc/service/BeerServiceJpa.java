@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 @Primary
 @Service
@@ -38,8 +39,18 @@ public class BeerServiceJpa implements BeerService {
     }
 
     @Override
-    public boolean updateBeer(UUID id, BeerDTO beer) {
-        return false;
+    public boolean updateBeer(UUID id, BeerDTO beerDTO) {
+        AtomicBoolean bool = new AtomicBoolean(false);
+        getBeerById(id).ifPresent(foundBeer -> {
+            foundBeer.setBeerName(beerDTO.getBeerName());
+            foundBeer.setBeerStyle(beerDTO.getBeerStyle());
+            foundBeer.setUpc(beerDTO.getUpc());
+            foundBeer.setPrice(beerDTO.getPrice());
+            foundBeer.setQuantityOnHand(beerDTO.getQuantityOnHand());
+            beerRepository.save(beerMapper.beerDtoToBeer(foundBeer));
+            bool.set(true);
+        });
+        return bool.get();
     }
 
     @Override

@@ -1,6 +1,8 @@
 package guru.springframework.spring6restmvc.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import guru.springframework.spring6restmvc.entities.Beer;
+import guru.springframework.spring6restmvc.mappers.BeerMapper;
 import guru.springframework.spring6restmvc.model.BeerDTO;
 import guru.springframework.spring6restmvc.repositories.BeerRepository;
 import jakarta.transaction.Transactional;
@@ -17,6 +19,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.contentOf;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
@@ -30,6 +33,8 @@ class BeerControllerIT {
     BeerController beerController;
     @Autowired
     ObjectMapper objectMapper;
+    @Autowired
+    BeerMapper beerMapper;
 
     @Test
     void test_getAllBeer() {
@@ -56,8 +61,8 @@ class BeerControllerIT {
         /*
         Confusion is that when u sent variable to controller, it always throws 404!
          */
-//        UUID beerId = UUID.fromString("badf0f81-46aa-486d-9b78-b5821a0dc6d2");
-//        BeerDTO beerDTO = beerController.getBeerById(beerId).getBody();
+//        UUID id = UUID.fromString("badf0f81-46aa-486d-9b78-b5821a0dc6d2");
+//        BeerDTO beerDTO = beerController.getBeerById(id).getBody();
         assertThat(beerDTO).isNotNull();
         assertThat(beerDTO.getBeerName()).isEqualTo("Galaxy Cat");
     }
@@ -92,6 +97,28 @@ class BeerControllerIT {
         System.out.println(savedBeerId);
         BeerDTO beerDTO1 = beerController.getBeerById(UUID.fromString(savedBeerId)).getBody();
         assertThat(beerDTO1).isNotNull();
+    }
+
+    @Test
+    void test_updateBeer() {
+
+        Beer beer = beerRepository.findAll().get(0);
+
+        BeerDTO beerDTO = beerMapper.beerToBeerDto(beer);
+        beerDTO.setId(null);
+        beerDTO.setVersion(null);
+        beerDTO.setCreatedDate(null);
+        beerDTO.setUpdateDate(null);
+        final String beerName = beerDTO.getBeerName() + " UPDATED";
+        beerDTO.setBeerName(beerName);
+
+        var resEnt = beerController.updateBeerById(beer.getId(), beerDTO);
+        assertThat(resEnt.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+
+        Beer updatedBeer = beerRepository.findById(beer.getId()).get();
+        assertThat(updatedBeer).isNotNull();
+        assertThat(updatedBeer.getBeerName()).isEqualTo(beerName);
+        assertThat(updatedBeer.getUpdateDate()).isNotNull();
 
     }
 }
