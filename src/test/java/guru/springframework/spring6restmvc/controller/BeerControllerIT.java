@@ -9,8 +9,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
 
 import java.util.List;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
 class BeerControllerIT {
@@ -38,5 +40,25 @@ class BeerControllerIT {
         beerRepository.deleteAll();
         List<BeerDTO> beerDTOList = beerController.listBeers().getBody();
         assertThat(beerDTOList.size()).isEqualTo(0);
+    }
+
+    @Test
+    void test_getBeerById() {
+        BeerDTO beer = beerController.listBeers().getBody().get(0);
+        BeerDTO beerDTO = beerController.getBeerById(beer.getId()).getBody();
+        /*
+        Confusion is that when u sent variable to controller, it always throws 404!
+         */
+//        UUID beerId = UUID.fromString("badf0f81-46aa-486d-9b78-b5821a0dc6d2");
+//        BeerDTO beerDTO = beerController.getBeerById(beerId).getBody();
+        assertThat(beerDTO).isNotNull();
+        assertThat(beerDTO.getBeerName()).isEqualTo("Galaxy Cat");
+    }
+
+    @Test
+    void test_getBeerById_Exception() {
+        assertThrows(NotFoundException.class, () -> {
+            beerController.getBeerById(UUID.randomUUID());
+        });
     }
 }
