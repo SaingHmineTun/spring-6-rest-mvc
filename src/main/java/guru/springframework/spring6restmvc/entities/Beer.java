@@ -7,6 +7,10 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -17,6 +21,7 @@ import java.util.UUID;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
+@EntityListeners(AuditingEntityListener.class)
 public class Beer {
     @Id
     @GeneratedValue(generator = "UUID")
@@ -30,6 +35,8 @@ public class Beer {
     private String upc;
     private Integer quantityOnHand;
     private BigDecimal price;
+    @CreatedDate
     private LocalDateTime createdDate;
+    @LastModifiedDate
     private LocalDateTime updateDate;
 }

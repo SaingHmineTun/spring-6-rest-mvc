@@ -7,6 +7,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.UuidGenerator;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -16,6 +19,7 @@ import java.util.UUID;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
+@EntityListeners(AuditingEntityListener.class)
 public class Customer {
     @Id
     @GeneratedValue(generator = "UUID")
@@ -25,6 +29,8 @@ public class Customer {
     @Version
     private Integer version;
     private String name;
+    @CreatedDate
     private LocalDateTime createdDate;
+    @LastModifiedDate
     private LocalDateTime updateDate;
 }

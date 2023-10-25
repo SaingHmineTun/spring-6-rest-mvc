@@ -1,5 +1,6 @@
 package guru.springframework.spring6restmvc.service;
 
+import guru.springframework.spring6restmvc.entities.Beer;
 import guru.springframework.spring6restmvc.mappers.BeerMapper;
 import guru.springframework.spring6restmvc.model.BeerDTO;
 import guru.springframework.spring6restmvc.repositories.BeerRepository;
@@ -31,8 +32,9 @@ public class BeerServiceJpa implements BeerService {
     }
 
     @Override
-    public BeerDTO addBeer(BeerDTO beer) {
-        return null;
+    public BeerDTO addBeer(BeerDTO beerDTO) {
+        Beer beer1 = beerRepository.save(beerMapper.beerDtoToBeer(beerDTO));
+        return beerMapper.beerToBeerDto(beer1);
     }
 
     @Override
@@ -42,6 +44,10 @@ public class BeerServiceJpa implements BeerService {
 
     @Override
     public boolean deleteBeerById(UUID uuid) {
+        if (getBeerById(uuid).isPresent()) {
+            beerRepository.deleteById(uuid);
+            return true;
+        }
         return false;
     }
 
