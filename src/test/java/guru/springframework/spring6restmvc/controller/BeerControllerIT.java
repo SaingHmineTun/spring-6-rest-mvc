@@ -124,11 +124,25 @@ class BeerControllerIT {
 //        assertThat(updatedBeer.getUpdateDate()).isNotNull();
 
     }
-
+    @Rollback
+    @Transactional
     @Test
     void test_updateBeer_NotFound() {
         assertThrows(NotFoundException.class, () -> {
             beerController.updateBeerById(UUID.randomUUID(), BeerDTO.builder().build());
+        });
+    }
+
+    @Rollback
+    @Transactional
+    @Test
+    void test_deleteById() {
+        Beer beer = beerRepository.findAll().get(0);
+        var resEnt = beerController.deleteBeerById(beer.getId());
+        assertThat(resEnt.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
+
+        assertThrows(NotFoundException.class, () -> {
+            beerController.getBeerById(beer.getId());
         });
     }
 }
