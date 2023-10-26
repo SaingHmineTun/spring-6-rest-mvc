@@ -5,6 +5,7 @@ import guru.springframework.spring6restmvc.service.BeerService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -37,7 +38,7 @@ public class BeerController {
     }
 
     @PostMapping(BEER_PATH)
-    public ResponseEntity<URI> createNewBear(@RequestBody BeerDTO beer) {
+    public ResponseEntity<URI> createNewBear(@Validated @RequestBody BeerDTO beer) {
         BeerDTO addedBeer = beerService.addBeer(beer);
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
