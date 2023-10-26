@@ -145,4 +145,33 @@ class BeerControllerIT {
             beerController.getBeerById(beer.getId());
         });
     }
+
+    @Test
+    void test_deleteById_NotFound() {
+        assertThrows(NotFoundException.class, () -> {
+           beerController.deleteBeerById(UUID.randomUUID());
+        });
+    }
+
+    @Rollback
+    @Transactional
+    @Test
+    void test_updatePatchById() {
+        BeerDTO toUpdate = beerController.listBeers().getBody().get(1);
+        final String beerName = toUpdate.getBeerName() + " UPDATED";
+        BeerDTO beerDTO = objectMapper.convertValue(Map.of("beerName", beerName), BeerDTO.class);
+        ResponseEntity<BeerDTO> resEnt = beerController.updateBeerContentById(toUpdate.getId(), beerDTO);
+
+        assertThat(resEnt.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(resEnt.getBody().getBeerName()).isEqualTo(beerName);
+    }
+
+    @Test
+    void test_updatePath_NotFound() {
+        assertThrows(NotFoundException.class, () -> {
+            beerController.updateBeerContentById(UUID.randomUUID(), BeerDTO.builder().build());
+        });
+    }
 }
+
+

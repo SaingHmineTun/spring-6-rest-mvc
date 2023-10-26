@@ -171,7 +171,7 @@ class BeerControllerTest {
 
         UUID uuid = UUID.randomUUID();
 
-        given(beerService.updateBeerContentById(any(UUID.class), any(BeerDTO.class))).willReturn(true);
+        given(beerService.updateBeerContentById(any(UUID.class), any(BeerDTO.class))).willReturn(Optional.ofNullable(beer));
 
         mockMvc.perform(patch(BEER_PATH_ID, uuid)
                         .accept(MediaType.APPLICATION_JSON)

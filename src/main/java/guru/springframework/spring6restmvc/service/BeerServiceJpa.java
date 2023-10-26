@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
 @Primary
@@ -56,16 +55,35 @@ public class BeerServiceJpa implements BeerService {
 
     @Override
     public boolean deleteBeerById(UUID uuid) {
-        AtomicBoolean atomicBoolean = new AtomicBoolean(false);
-        if (getBeerById(uuid).isPresent()) {
+        if (beerRepository.existsById(uuid)) {
             beerRepository.deleteById(uuid);
-            atomicBoolean.set(true);
+            return true;
         }
-        return atomicBoolean.get();
+        return false;
     }
 
     @Override
-    public boolean updateBeerContentById(UUID uuid, BeerDTO beer) {
-        return false;
+    public Optional<BeerDTO> updateBeerContentById(UUID uuid, BeerDTO beer) {
+        AtomicReference<BeerDTO> beerDTOAtomicReference = new AtomicReference<>(null);
+        getBeerById(uuid).ifPresent(foundBeer -> {
+            if (beer.getBeerName() != null) {
+                foundBeer.setBeerName(beer.getBeerName());
+            }
+            if (beer.getBeerStyle() != null) {
+                foundBeer.setBeerStyle(beer.getBeerStyle());
+            }
+            if (beer.getPrice() != null) {
+                foundBeer.setPrice(beer.getPrice());
+            }
+            if (beer.getQuantityOnHand() != null) {
+                foundBeer.setQuantityOnHand(beer.getQuantityOnHand());
+            }
+            if (beer.getUpc() != null) {
+                foundBeer.setQuantityOnHand(beer.getQuantityOnHand());
+            }
+            Beer updatedBeer = beerRepository.save(beerMapper.beerDtoToBeer(foundBeer));
+            beerDTOAtomicReference.set(beerMapper.beerToBeerDto(updatedBeer));
+        });
+        return Optional.ofNullable(beerDTOAtomicReference.get());
     }
 }

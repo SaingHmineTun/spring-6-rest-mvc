@@ -49,14 +49,14 @@ public class BeerController {
 
     @PutMapping(BEER_PATH_ID)
     public ResponseEntity<BeerDTO> updateBeerById(@PathVariable("beerId") UUID id, @RequestBody BeerDTO beer) {
-        BeerDTO isUpdated = beerService.updateBeer(id, beer).orElseThrow(NotFoundException::new);
-        return ResponseEntity.ok(isUpdated);
+        BeerDTO updatedBeer = beerService.updateBeer(id, beer).orElseThrow(NotFoundException::new);
+        return ResponseEntity.ok(updatedBeer);
     }
 
     @PatchMapping(BEER_PATH_ID)
-    public ResponseEntity<Void> updateBeerContentById(@PathVariable("beerId") UUID uuid, @RequestBody BeerDTO beer) {
-        if (beerService.updateBeerContentById(uuid, beer)) return ResponseEntity.noContent().build();
-        return ResponseEntity.notFound().build();
+    public ResponseEntity<BeerDTO> updateBeerContentById(@PathVariable("beerId") UUID uuid, @RequestBody BeerDTO beer) {
+        BeerDTO beerDTO = beerService.updateBeerContentById(uuid, beer).orElseThrow(NotFoundException::new);
+        return ResponseEntity.ok(beerDTO);
     }
 
     @DeleteMapping(BEER_PATH_ID)

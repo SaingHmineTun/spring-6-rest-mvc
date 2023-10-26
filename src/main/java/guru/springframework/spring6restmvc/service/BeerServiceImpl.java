@@ -122,7 +122,7 @@ public class BeerServiceImpl implements BeerService {
     }
 
     @Override
-    public boolean updateBeerContentById(UUID uuid, BeerDTO beer) {
+    public Optional<BeerDTO> updateBeerContentById(UUID uuid, BeerDTO beer) {
         BeerDTO existingBeer = beerMap.get(uuid);
         if (existingBeer != null) {
             if (beer.getBeerName() != null) {
@@ -141,7 +141,8 @@ public class BeerServiceImpl implements BeerService {
                 existingBeer.setQuantityOnHand(beer.getQuantityOnHand());
             }
             beerMap.put(uuid, existingBeer);
+            return Optional.ofNullable(beerMap.get(uuid));
         }
-        return false;
+        return Optional.empty();
     }
 }
