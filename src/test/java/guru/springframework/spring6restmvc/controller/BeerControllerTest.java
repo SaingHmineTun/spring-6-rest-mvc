@@ -119,7 +119,7 @@ class BeerControllerTest {
 
     @Test
     void test_updateBeer() throws Exception {
-        given(beerService.updateBeer(any(UUID.class), any(BeerDTO.class))).willReturn(true);
+        given(beerService.updateBeer(any(UUID.class), any(BeerDTO.class))).willReturn(Optional.ofNullable(beer));
 
         mockMvc.perform(put(BEER_PATH_ID, UUID.randomUUID())
                         .accept(MediaType.APPLICATION_JSON)
@@ -131,7 +131,7 @@ class BeerControllerTest {
 
     @Test
     void test_updateBeer_notFound() throws Exception {
-        given(beerService.updateBeer(any(UUID.class), any(BeerDTO.class))).willReturn(false);
+        given(beerService.updateBeer(any(UUID.class), any(BeerDTO.class))).willReturn(Optional.ofNullable(beer));
 
         mockMvc.perform(put(BEER_PATH_ID, UUID.randomUUID())
                         .accept(MediaType.APPLICATION_JSON)

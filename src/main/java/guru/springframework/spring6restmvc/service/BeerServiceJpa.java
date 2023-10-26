@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 
 @Primary
 @Service
@@ -39,18 +40,18 @@ public class BeerServiceJpa implements BeerService {
     }
 
     @Override
-    public boolean updateBeer(UUID id, BeerDTO beerDTO) {
-        AtomicBoolean bool = new AtomicBoolean(false);
+    public Optional<BeerDTO> updateBeer(UUID id, BeerDTO beerDTO) {
+        AtomicReference<BeerDTO> atomicReference = new AtomicReference<>(null);
         getBeerById(id).ifPresent(foundBeer -> {
             foundBeer.setBeerName(beerDTO.getBeerName());
             foundBeer.setBeerStyle(beerDTO.getBeerStyle());
             foundBeer.setUpc(beerDTO.getUpc());
             foundBeer.setPrice(beerDTO.getPrice());
             foundBeer.setQuantityOnHand(beerDTO.getQuantityOnHand());
-            beerRepository.save(beerMapper.beerDtoToBeer(foundBeer));
-            bool.set(true);
+            BeerDTO beerDTO1 = beerMapper.beerToBeerDto(beerRepository.save(beerMapper.beerDtoToBeer(foundBeer)));
+            atomicReference.set(beerDTO1);
         });
-        return bool.get();
+        return Optional.ofNullable(atomicReference.get());
     }
 
     @Override
