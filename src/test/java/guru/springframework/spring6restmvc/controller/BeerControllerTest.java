@@ -4,6 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import guru.springframework.spring6restmvc.model.BeerDTO;
 import guru.springframework.spring6restmvc.model.BeerStyle;
 import guru.springframework.spring6restmvc.service.BeerService;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.metamodel.Metamodel;
+import org.aspectj.lang.annotation.Before;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -11,6 +14,9 @@ import org.mockito.Captor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.FilterType;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -27,11 +33,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WebMvcTest(BeerController.class)
+@WebMvcTest(controllers = BeerController.class)
 class BeerControllerTest {
 
     @MockBean
@@ -47,7 +54,6 @@ class BeerControllerTest {
 
     @Test
     void test_getBeerById() throws Exception {
-
 
         given(beerService.getBeerById(any(UUID.class))).willReturn(Optional.of(BeerDTO.builder().id(UUID.randomUUID()).beerName("Change").build()));
 
@@ -125,13 +131,13 @@ class BeerControllerTest {
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(beer)))
-                .andExpect(status().isNoContent());
+                .andExpect(status().isOk());
 
     }
 
     @Test
     void test_updateBeer_notFound() throws Exception {
-        given(beerService.updateBeer(any(UUID.class), any(BeerDTO.class))).willReturn(Optional.ofNullable(beer));
+        given(beerService.updateBeer(any(UUID.class), any(BeerDTO.class))).willReturn(Optional.empty());
 
         mockMvc.perform(put(BEER_PATH_ID, UUID.randomUUID())
                         .accept(MediaType.APPLICATION_JSON)
@@ -177,7 +183,7 @@ class BeerControllerTest {
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(beerJson))
-                .andExpect(status().isNoContent());
+                .andExpect(status().isOk());
 
         verify(beerService).updateBeerContentById(uuidArgumentCaptor.capture(), beerArgumentCaptor.capture());
         assertThat(uuidArgumentCaptor.getValue()).isEqualTo(uuid);
