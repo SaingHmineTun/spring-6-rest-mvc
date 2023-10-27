@@ -16,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MockMvcBuilder;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
@@ -197,14 +198,15 @@ class BeerControllerIT {
     @Test
     void test_saveBeerBadName() throws Exception {
         Beer beer = beerRepository.findAll().get(0);
-        mockMvc.perform(patch(BEER_PATH_ID, beer.getId())
+        MvcResult mvcResult = mockMvc.perform(patch(BEER_PATH_ID, beer.getId())
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(BeerDTO.builder()
                         .beerName("KhufraKhufraKhufraKhufraKhufraKhufraKhufraKhufraKhufraKhufraKhufraKhufraKhufraKhufraKhufraKhufraKhufraKhufraKhufraKhufra")
                         .build())
                 )
-        ).andExpect(status().isBadRequest());
+        ).andExpect(status().isBadRequest()).andReturn();
+        System.out.println(mvcResult.getResponse().getContentAsString());
     }
 }
 

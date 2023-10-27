@@ -1,6 +1,7 @@
 package guru.springframework.spring6restmvc.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import guru.springframework.spring6restmvc.entities.Beer;
 import guru.springframework.spring6restmvc.model.BeerDTO;
 import guru.springframework.spring6restmvc.model.BeerStyle;
 import guru.springframework.spring6restmvc.service.BeerService;
@@ -189,13 +190,11 @@ class BeerControllerTest {
 
         given(beerService.addBeer(beer)).willReturn(beer);
 
-        MvcResult mvcResult = mockMvc.perform(post(BEER_PATH)
+        mockMvc.perform(post(BEER_PATH)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(BeerDTO.builder().build())))
                 .andExpect(status().isBadRequest()).andReturn();
-
-        // Without ExceptionController, content will only be empty
-        // System.out.println(mvcResult.getResponse().getContentAsString());
     }
+
 }
