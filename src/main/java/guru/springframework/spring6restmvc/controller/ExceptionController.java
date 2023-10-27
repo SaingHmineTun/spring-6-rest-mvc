@@ -1,6 +1,7 @@
 package guru.springframework.spring6restmvc.controller;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.TransactionSystemException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -21,6 +22,12 @@ public class ExceptionController {
                 }
         ).toList();
         return ResponseEntity.badRequest().body(errorList);
+    }
+
+    @ExceptionHandler(TransactionSystemException.class)
+    ResponseEntity handleJpaViolation(TransactionSystemException exception) {
+        var ex = exception;
+        return ResponseEntity.badRequest().body(exception.getMessage());
     }
 
 }
