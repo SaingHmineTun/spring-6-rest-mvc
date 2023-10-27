@@ -4,6 +4,7 @@ import guru.springframework.spring6restmvc.model.BeerStyle;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -34,6 +35,8 @@ public class Beer {
     private Integer version;
     @NotNull
     @NotBlank
+    @Size(max = 50) // Entity Constraint, constraint before sending to the database
+    @Column(length = 50) // Database Constraint, constraints while sending to the database
     private String beerName;
     @NotNull
     private BeerStyle beerStyle;
