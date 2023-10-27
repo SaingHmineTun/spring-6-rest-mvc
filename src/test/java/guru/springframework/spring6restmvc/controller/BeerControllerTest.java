@@ -195,6 +195,7 @@ class BeerControllerTest {
                         .content(objectMapper.writeValueAsString(BeerDTO.builder().build())))
                 .andExpect(status().isBadRequest()).andReturn();
 
-        System.out.println(mvcResult.getResponse().getContentAsString());
+        // Without ExceptionController, content will only be empty
+        // System.out.println(mvcResult.getResponse().getContentAsString());
     }
 }

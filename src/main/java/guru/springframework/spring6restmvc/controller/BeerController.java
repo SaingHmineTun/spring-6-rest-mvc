@@ -49,11 +49,13 @@ public class BeerController {
     }
 
     @PutMapping(BEER_PATH_ID)
-    public ResponseEntity<BeerDTO> updateBeerById(@PathVariable("beerId") UUID id, @RequestBody BeerDTO beer) {
+    public ResponseEntity<BeerDTO> updateBeerById(@PathVariable("beerId") UUID id, @Validated @RequestBody BeerDTO beer) {
         BeerDTO updatedBeer = beerService.updateBeer(id, beer).orElseThrow(NotFoundException::new);
         return ResponseEntity.ok(updatedBeer);
     }
 
+    // We don't validate in controller because beerName or beerStyle could be null
+    // We can validate in Entity though!
     @PatchMapping(BEER_PATH_ID)
     public ResponseEntity<BeerDTO> updateBeerContentById(@PathVariable("beerId") UUID uuid, @RequestBody BeerDTO beer) {
         BeerDTO beerDTO = beerService.updateBeerContentById(uuid, beer).orElseThrow(NotFoundException::new);
