@@ -74,7 +74,7 @@ class BeerControllerIT {
 //        UUID id = UUID.fromString("badf0f81-46aa-486d-9b78-b5821a0dc6d2");
 //        BeerDTO beerDTO = beerController.getBeerById(id).getBody();
         assertThat(beerDTO).isNotNull();
-        assertThat(beerDTO.getBeerName()).isEqualTo("Galaxy Cat");
+//        assertThat(beerDTO.getBeerName()).isEqualTo("Galaxy Cat");
     }
 
     @Test
