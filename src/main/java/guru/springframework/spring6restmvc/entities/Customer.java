@@ -1,6 +1,7 @@
 package guru.springframework.spring6restmvc.entities;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -32,6 +33,8 @@ public class Customer {
     @Version
     private Integer version;
     private String name;
+    @Column(length = 255)
+    private String email;
     @CreatedDate
     private LocalDateTime createdDate;
     @LastModifiedDate
