@@ -6,9 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.annotations.UuidGenerator;
+import org.hibernate.annotations.*;
 import org.hibernate.type.SqlTypes;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -22,7 +20,7 @@ import java.util.UUID;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@EntityListeners(AuditingEntityListener.class)
+//@EntityListeners(AuditingEntityListener.class)
 public class Customer {
     @Id
     @GeneratedValue(generator = "UUID")
@@ -35,8 +33,10 @@ public class Customer {
     private String name;
     @Column(length = 255)
     private String email;
-    @CreatedDate
+//    @CreatedDate
+    @CreationTimestamp
     private LocalDateTime createdDate;
-    @LastModifiedDate
+//    @LastModifiedDate
+    @UpdateTimestamp
     private LocalDateTime updateDate;
 }

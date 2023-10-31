@@ -9,9 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.JdbcType;
-import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.annotations.*;
 import org.hibernate.type.SqlTypes;
 import org.hibernate.type.descriptor.jdbc.CharJdbcType;
 import org.springframework.data.annotation.CreatedDate;
@@ -28,7 +26,7 @@ import java.util.UUID;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@EntityListeners(AuditingEntityListener.class)
+//@EntityListeners(AuditingEntityListener.class)
 public class Beer {
     @Id
     @GeneratedValue(generator = "UUID")
@@ -53,8 +51,10 @@ public class Beer {
     private Integer quantityOnHand;
     @NotNull
     private BigDecimal price;
-    @CreatedDate
+//    @CreatedDate
+    @CreationTimestamp
     private LocalDateTime createdDate;
-    @LastModifiedDate
+//    @LastModifiedDate
+    @UpdateTimestamp
     private LocalDateTime updateDate;
 }
