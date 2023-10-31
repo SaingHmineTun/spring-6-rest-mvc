@@ -51,7 +51,7 @@ class BeerControllerIT {
 
         List<BeerDTO> beerDTOList = beerController.listBeers().getBody();
 
-        assertThat(beerDTOList.size()).isEqualTo(3);
+        assertThat(beerDTOList.size()).isGreaterThan(2000);
 
     }
 
