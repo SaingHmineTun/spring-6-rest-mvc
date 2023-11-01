@@ -5,6 +5,7 @@ import guru.springframework.spring6restmvc.model.BeerStyle;
 import guru.springframework.spring6restmvc.service.BeerService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -25,6 +26,9 @@ public class BeerController {
     public static final String BEER_PATH = "/api/v1/beer";
     public static final String BEER_PATH_ID = BEER_PATH + "/{beerId}";
 
+    private static final Integer DEFAULT_PAGE_NUMBER = 0;
+    private static final Integer DEFAULT_PAGE_SIZE = 25;
+
     private final BeerService beerService;
 
 //    @GetMapping(BEER_PATH)
@@ -39,7 +43,31 @@ public class BeerController {
                                                         @RequestParam(required = false) Integer pageNumber,
                                                         @RequestParam(required = false) Integer pageSize) {
 
+        PageRequest pageRequest = buildPageRequest(pageNumber, pageSize);
+
         return ResponseEntity.ok(beerService.getBeerByQuery(beerName, beerStyle, showInventory, pageNumber, pageSize));
+    }
+
+    public PageRequest buildPageRequest(Integer pageNumber, Integer pageSize) {
+        int queryPageNumber, queryPageSize;
+        if (pageNumber != null && pageNumber > 0) {
+            // Page 1 = Page Index 0
+            queryPageNumber = pageNumber - 1;
+        } else {
+            queryPageNumber = DEFAULT_PAGE_NUMBER;
+        }
+
+        if (pageSize != null) {
+            if (pageSize > 1000)
+                queryPageSize = 1000;
+            else
+                queryPageSize = pageSize;
+        } else {
+            queryPageSize = DEFAULT_PAGE_SIZE;
+        }
+
+        return PageRequest.of(queryPageNumber, queryPageSize);
+
     }
 
     @GetMapping(BEER_PATH_ID)
