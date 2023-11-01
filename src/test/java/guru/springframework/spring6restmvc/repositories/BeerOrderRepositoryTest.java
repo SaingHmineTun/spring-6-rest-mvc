@@ -38,7 +38,15 @@ class BeerOrderRepositoryTest {
                 .customer(testCustomer)
                 .build();
         // Save and Flush to see beerOrder list in a customer object in realtime.
-        BeerOrder savedBeerOrder = beerOrderRepository.saveAndFlush(beerOrder);
+        BeerOrder savedBeerOrder = beerOrderRepository.save(beerOrder);
+        System.out.println(savedBeerOrder);
+
+
+        BeerOrder beerOrder2 = BeerOrder.builder()
+                .customerRef("Test Beer Order 2")
+                .customer(testCustomer)
+                .build();
+        savedBeerOrder = beerOrderRepository.save(beerOrder2);
         System.out.println(savedBeerOrder);
     }
 }
