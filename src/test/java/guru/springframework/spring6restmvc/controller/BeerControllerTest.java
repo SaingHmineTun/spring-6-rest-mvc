@@ -11,6 +11,7 @@ import org.mockito.Captor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -69,13 +70,13 @@ class BeerControllerTest {
     @Test
     void test_getAllBeers() throws Exception {
 
-        given(beerService.getBeerByQuery(any(), any(), any(), any(), any())).willReturn(List.of(beer));
+        given(beerService.getBeerByQuery(any(), any(), any(), any(), any())).willReturn(new PageImpl<>(List.of(beer)));
 
         mockMvc.perform(get(BEER_PATH)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.size()", is(1)));
+                .andExpect(jsonPath("$.content.size()", is(1)));
 
     }
 

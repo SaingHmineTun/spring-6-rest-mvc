@@ -7,10 +7,12 @@ import guru.springframework.spring6restmvc.model.BeerStyle;
 import guru.springframework.spring6restmvc.repositories.BeerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Primary;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
@@ -22,6 +24,9 @@ public class BeerServiceJpa implements BeerService {
 
     public final BeerRepository beerRepository;
     public final BeerMapper beerMapper;
+
+    private static final Integer DEFAULT_PAGE_NUMBER = 0;
+    private static final Integer DEFAULT_PAGE_SIZE = 25;
 
     @Override
     public Optional<BeerDTO> getBeerById(UUID id) {
@@ -85,26 +90,53 @@ public class BeerServiceJpa implements BeerService {
     }
 
     @Override
-    public List<BeerDTO> getBeerByQuery(String beerName, BeerStyle beerStyle, Boolean showInventory, Integer pageNumber, Integer pageSize) {
-        List<BeerDTO> beerDTOList;
+    public Page<BeerDTO> getBeerByQuery(String beerName, BeerStyle beerStyle, Boolean showInventory, Integer pageNumber, Integer pageSize) {
+        Page<BeerDTO> beerDTOPage;
+
+        PageRequest pageRequest = buildPageRequest(pageNumber, pageSize);
+
         if (StringUtils.hasText(beerName) && beerStyle != null) {
-            beerDTOList = beerRepository.findBeersByBeerNameIsLikeIgnoreCaseAndBeerStyle("%" + beerName + "%", beerStyle).stream().map(beerMapper::beerToBeerDto).toList();
+            beerDTOPage = beerRepository.findBeersByBeerNameIsLikeIgnoreCaseAndBeerStyle("%" + beerName + "%", beerStyle, pageRequest).map(beerMapper::beerToBeerDto);
         } else if (StringUtils.hasText(beerName)) {
-            beerDTOList = beerRepository.findBeersByBeerNameIsLikeIgnoreCase("%" + beerName + "%").stream().map(beerMapper::beerToBeerDto).toList();
+            beerDTOPage = beerRepository.findBeersByBeerNameIsLikeIgnoreCase("%" + beerName + "%", pageRequest).map(beerMapper::beerToBeerDto);
         } else if (beerStyle != null) {
-            beerDTOList = beerRepository.findBeersByBeerStyle(beerStyle).stream().map(beerMapper::beerToBeerDto).toList();
+            beerDTOPage = beerRepository.findBeersByBeerStyle(beerStyle, pageRequest).map(beerMapper::beerToBeerDto);
         } else {
-            beerDTOList = beerRepository.findAll().stream().map(beerMapper::beerToBeerDto).toList();
+            beerDTOPage = new PageImpl<>(beerRepository.findAll().stream().map(beerMapper::beerToBeerDto).toList());
         }
 
-        System.out.println(beerDTOList);
+        System.out.println(beerDTOPage);
 
         if (showInventory != null && !showInventory) {
-            beerDTOList.forEach(beerDTO -> beerDTO.setQuantityOnHand(null));
+            beerDTOPage.forEach(beerDTO -> beerDTO.setQuantityOnHand(null));
         }
 
-        System.out.println(beerDTOList);
+        System.out.println(beerDTOPage);
 
-        return beerDTOList;
+
+
+        return beerDTOPage;
+    }
+
+    public PageRequest buildPageRequest(Integer pageNumber, Integer pageSize) {
+        int queryPageNumber, queryPageSize;
+        if (pageNumber != null && pageNumber > 0) {
+            // Page 1 = Page Index 0
+            queryPageNumber = pageNumber - 1;
+        } else {
+            queryPageNumber = DEFAULT_PAGE_NUMBER;
+        }
+
+        if (pageSize != null) {
+            if (pageSize > 1000)
+                queryPageSize = 1000;
+            else
+                queryPageSize = pageSize;
+        } else {
+            queryPageSize = DEFAULT_PAGE_SIZE;
+        }
+
+        return PageRequest.of(queryPageNumber, queryPageSize);
+
     }
 }

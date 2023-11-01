@@ -11,6 +11,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -52,9 +53,9 @@ class BeerControllerIT {
     @Test
     void test_getAllBeer() {
 
-        List<BeerDTO> beerDTOList = beerController.getBeerByQuery(null, null, false, 1, 25).getBody();
+        Page<BeerDTO> beerDTOList = beerController.getBeerByQuery(null, null, false, 1, 25).getBody();
 
-        assertThat(beerDTOList.size()).isGreaterThan(2000);
+        assertThat(beerDTOList.getContent().size()).isGreaterThan(2000);
 
     }
 
@@ -63,13 +64,13 @@ class BeerControllerIT {
     @Transactional // To go back to the original state
     void test_getAllBeer_EmptyList() {
         beerRepository.deleteAll();
-        List<BeerDTO> beerDTOList = beerController.getBeerByQuery(null, null, false, 1, 25).getBody();
-        assertThat(beerDTOList.size()).isEqualTo(0);
+        Page<BeerDTO> beerDTOList = beerController.getBeerByQuery(null, null, false, 1, 25).getBody();
+        assertThat(beerDTOList.getContent().size()).isEqualTo(0);
     }
 
     @Test
     void test_getBeerById() {
-        BeerDTO beer = beerController.getBeerByQuery(null, null, false, 1, 25).getBody().get(0);
+        BeerDTO beer = beerController.getBeerByQuery(null, null, false, 1, 25).getBody().toList().get(0);
         BeerDTO beerDTO = beerController.getBeerById(beer.getId()).getBody();
         /*
         Confusion is that when u sent variable to controller, it always throws 404!
@@ -166,7 +167,7 @@ class BeerControllerIT {
     @Transactional
     @Test
     void test_updatePatchById() {
-        BeerDTO toUpdate = beerController.getBeerByQuery(null, null, false, 1, 25).getBody().get(1);
+        BeerDTO toUpdate = beerController.getBeerByQuery(null, null, false, 1, 25).getBody().toList().get(1);
         final String beerName = toUpdate.getBeerName() + " UPDATED";
         BeerDTO beerDTO = objectMapper.convertValue(Map.of("beerName", beerName), BeerDTO.class);
         ResponseEntity<BeerDTO> resEnt = beerController.updateBeerContentById(toUpdate.getId(), beerDTO);
@@ -227,7 +228,7 @@ class BeerControllerIT {
                         .queryParam("beerName", "IPA")
                         .queryParam("beerStyle", BeerStyle.IPA.name()))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.size()", is(310)));
+                .andExpect(jsonPath("$.total", is(310)));
     }
 
     @Test
@@ -237,7 +238,7 @@ class BeerControllerIT {
                         .queryParam("beerStyle", BeerStyle.IPA.name())
                         .queryParam("showInventory", "true"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.size()", is(310)));
+                .andExpect(jsonPath("$.total", is(310)));
     }
 
     @Test
@@ -247,7 +248,7 @@ class BeerControllerIT {
                         .queryParam("beerStyle", BeerStyle.IPA.name())
                         .queryParam("showInventory", "false"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.size()", is(310)));
+                .andExpect(jsonPath("$.total", is(310)));
     }
 
     @Test
@@ -260,7 +261,7 @@ class BeerControllerIT {
                         .queryParam("pageSize", "50")
                 )
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.size()", is(50)));
+                .andExpect(jsonPath("$.content.size()", is(50)));
     }
 
 }
