@@ -1,6 +1,7 @@
 package guru.springframework.spring6restmvc.controller;
 
 import guru.springframework.spring6restmvc.model.BeerDTO;
+import guru.springframework.spring6restmvc.model.BeerStyle;
 import guru.springframework.spring6restmvc.service.BeerService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,9 +27,17 @@ public class BeerController {
 
     private final BeerService beerService;
 
+//    @GetMapping(BEER_PATH)
+//    public ResponseEntity<List<BeerDTO>> listBeers() {
+//        return ResponseEntity.ok(beerService.listBeers());
+//    }
+
     @GetMapping(BEER_PATH)
-    public ResponseEntity<List<BeerDTO>> listBeers() {
-        return ResponseEntity.ok(beerService.listBeers());
+    public ResponseEntity<List<BeerDTO>> getBeerByQuery(@RequestParam(value = "beerName", required = false) String beerName,
+                                                        @RequestParam(value = "beerStyle", required = false) BeerStyle beerStyle,
+                                                        @RequestParam(value = "showInventory", required = false) Boolean showInventory) {
+
+        return ResponseEntity.ok(beerService.getBeerByQuery(beerName, beerStyle, showInventory));
     }
 
     @GetMapping(BEER_PATH_ID)
@@ -36,6 +45,7 @@ public class BeerController {
         BeerDTO beer = beerService.getBeerById(id).orElseThrow(NotFoundException::new);
         return ResponseEntity.ok(beer);
     }
+
 
     @PostMapping(BEER_PATH)
     public ResponseEntity<URI> createNewBear(@Validated @RequestBody BeerDTO beer) {

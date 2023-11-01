@@ -64,11 +64,6 @@ public class BeerServiceImpl implements BeerService {
     }
 
     @Override
-    public List<BeerDTO> listBeers(){
-        return new ArrayList<>(beerMap.values());
-    }
-
-    @Override
     public Optional<BeerDTO> getBeerById(UUID id) {
 
         log.debug("Get Beer by Id - in service. Id: " + id.toString());
@@ -144,5 +139,10 @@ public class BeerServiceImpl implements BeerService {
             return Optional.ofNullable(beerMap.get(uuid));
         }
         return Optional.empty();
+    }
+
+    @Override
+    public List<BeerDTO> getBeerByQuery(String beerName, BeerStyle beerStyle, Boolean showInventory){
+        return new ArrayList<>(beerMap.values());
     }
 }

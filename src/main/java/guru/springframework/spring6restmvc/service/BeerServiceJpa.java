@@ -3,10 +3,12 @@ package guru.springframework.spring6restmvc.service;
 import guru.springframework.spring6restmvc.entities.Beer;
 import guru.springframework.spring6restmvc.mappers.BeerMapper;
 import guru.springframework.spring6restmvc.model.BeerDTO;
+import guru.springframework.spring6restmvc.model.BeerStyle;
 import guru.springframework.spring6restmvc.repositories.BeerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 import java.util.Optional;
@@ -20,11 +22,6 @@ public class BeerServiceJpa implements BeerService {
 
     public final BeerRepository beerRepository;
     public final BeerMapper beerMapper;
-
-    @Override
-    public List<BeerDTO> listBeers() {
-        return beerRepository.findAll().stream().map(beerMapper::beerToBeerDto).toList();
-    }
 
     @Override
     public Optional<BeerDTO> getBeerById(UUID id) {
@@ -85,5 +82,29 @@ public class BeerServiceJpa implements BeerService {
             beerDTOAtomicReference.set(beerMapper.beerToBeerDto(updatedBeer));
         });
         return Optional.ofNullable(beerDTOAtomicReference.get());
+    }
+
+    @Override
+    public List<BeerDTO> getBeerByQuery(String beerName, BeerStyle beerStyle, Boolean showInventory) {
+        List<BeerDTO> beerDTOList;
+        if (StringUtils.hasText(beerName) && beerStyle != null) {
+            beerDTOList = beerRepository.findBeersByBeerNameIsLikeIgnoreCaseAndBeerStyle("%" + beerName + "%", beerStyle).stream().map(beerMapper::beerToBeerDto).toList();
+        } else if (StringUtils.hasText(beerName)) {
+            beerDTOList = beerRepository.findBeersByBeerNameIsLikeIgnoreCase("%" + beerName + "%").stream().map(beerMapper::beerToBeerDto).toList();
+        } else if (beerStyle != null) {
+            beerDTOList = beerRepository.findBeersByBeerStyle(beerStyle).stream().map(beerMapper::beerToBeerDto).toList();
+        } else {
+            beerDTOList = beerRepository.findAll().stream().map(beerMapper::beerToBeerDto).toList();
+        }
+
+        System.out.println(beerDTOList);
+
+        if (showInventory != null && !showInventory) {
+            beerDTOList.forEach(beerDTO -> beerDTO.setQuantityOnHand(null));
+        }
+
+        System.out.println(beerDTOList);
+
+        return beerDTOList;
     }
 }
