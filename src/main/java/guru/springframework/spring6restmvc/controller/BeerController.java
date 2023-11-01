@@ -4,6 +4,7 @@ import guru.springframework.spring6restmvc.model.BeerDTO;
 import guru.springframework.spring6restmvc.model.BeerStyle;
 import guru.springframework.spring6restmvc.service.BeerService;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -19,7 +20,7 @@ import java.util.UUID;
  * Created by jt, Spring Framework Guru.
  */
 @Slf4j
-@AllArgsConstructor
+@RequiredArgsConstructor
 @RestController
 public class BeerController {
 
@@ -27,12 +28,6 @@ public class BeerController {
     public static final String BEER_PATH_ID = BEER_PATH + "/{beerId}";
 
     private final BeerService beerService;
-
-//    @GetMapping(BEER_PATH)
-//    public ResponseEntity<List<BeerDTO>> listBeers() {
-//        return ResponseEntity.ok(beerService.listBeers());
-//    }
-
     @GetMapping(BEER_PATH)
     public ResponseEntity<Page<BeerDTO>> getBeerByQuery(@RequestParam(value = "beerName", required = false) String beerName,
                                                         @RequestParam(value = "beerStyle", required = false) BeerStyle beerStyle,

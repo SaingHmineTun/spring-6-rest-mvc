@@ -228,7 +228,7 @@ class BeerControllerIT {
                         .queryParam("beerName", "IPA")
                         .queryParam("beerStyle", BeerStyle.IPA.name()))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.total", is(310)));
+                .andExpect(jsonPath("$.totalElements", is(310)));
     }
 
     @Test
@@ -238,7 +238,7 @@ class BeerControllerIT {
                         .queryParam("beerStyle", BeerStyle.IPA.name())
                         .queryParam("showInventory", "true"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.total", is(310)));
+                .andExpect(jsonPath("$.totalElements", is(310)));
     }
 
     @Test
@@ -248,7 +248,7 @@ class BeerControllerIT {
                         .queryParam("beerStyle", BeerStyle.IPA.name())
                         .queryParam("showInventory", "false"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.total", is(310)));
+                .andExpect(jsonPath("$.totalElements", is(310)));
     }
 
     @Test
