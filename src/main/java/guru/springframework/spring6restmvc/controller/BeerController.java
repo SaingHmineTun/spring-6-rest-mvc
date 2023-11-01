@@ -39,7 +39,7 @@ public class BeerController {
                                                         @RequestParam(required = false) Integer pageNumber,
                                                         @RequestParam(required = false) Integer pageSize) {
 
-        return ResponseEntity.ok(beerService.getBeerByQuery(beerName, beerStyle, showInventory, 1, 25));
+        return ResponseEntity.ok(beerService.getBeerByQuery(beerName, beerStyle, showInventory, pageNumber, pageSize));
     }
 
     @GetMapping(BEER_PATH_ID)
