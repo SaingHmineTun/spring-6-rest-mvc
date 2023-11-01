@@ -106,15 +106,9 @@ public class BeerServiceJpa implements BeerService {
             beerDTOPage = new PageImpl<>(beerRepository.findAll().stream().map(beerMapper::beerToBeerDto).toList());
         }
 
-        System.out.println(beerDTOPage);
-
         if (showInventory != null && !showInventory) {
             beerDTOPage.forEach(beerDTO -> beerDTO.setQuantityOnHand(null));
         }
-
-        System.out.println(beerDTOPage);
-
-
 
         return beerDTOPage;
     }
