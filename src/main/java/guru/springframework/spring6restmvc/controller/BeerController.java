@@ -35,9 +35,11 @@ public class BeerController {
     @GetMapping(BEER_PATH)
     public ResponseEntity<List<BeerDTO>> getBeerByQuery(@RequestParam(value = "beerName", required = false) String beerName,
                                                         @RequestParam(value = "beerStyle", required = false) BeerStyle beerStyle,
-                                                        @RequestParam(value = "showInventory", required = false) Boolean showInventory) {
+                                                        @RequestParam(value = "showInventory", required = false) Boolean showInventory,
+                                                        @RequestParam(required = false) Integer pageNumber,
+                                                        @RequestParam(required = false) Integer pageSize) {
 
-        return ResponseEntity.ok(beerService.getBeerByQuery(beerName, beerStyle, showInventory));
+        return ResponseEntity.ok(beerService.getBeerByQuery(beerName, beerStyle, showInventory, 1, 25));
     }
 
     @GetMapping(BEER_PATH_ID)

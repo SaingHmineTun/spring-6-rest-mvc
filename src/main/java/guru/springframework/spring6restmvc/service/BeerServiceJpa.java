@@ -85,7 +85,7 @@ public class BeerServiceJpa implements BeerService {
     }
 
     @Override
-    public List<BeerDTO> getBeerByQuery(String beerName, BeerStyle beerStyle, Boolean showInventory) {
+    public List<BeerDTO> getBeerByQuery(String beerName, BeerStyle beerStyle, Boolean showInventory, Integer pageNumber, Integer pageSize) {
         List<BeerDTO> beerDTOList;
         if (StringUtils.hasText(beerName) && beerStyle != null) {
             beerDTOList = beerRepository.findBeersByBeerNameIsLikeIgnoreCaseAndBeerStyle("%" + beerName + "%", beerStyle).stream().map(beerMapper::beerToBeerDto).toList();

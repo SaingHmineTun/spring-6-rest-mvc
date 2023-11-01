@@ -69,7 +69,7 @@ class BeerControllerTest {
     @Test
     void test_getAllBeers() throws Exception {
 
-        given(beerService.getBeerByQuery(any(), any(), any())).willReturn(List.of(beer));
+        given(beerService.getBeerByQuery(any(), any(), any(), any(), any())).willReturn(List.of(beer));
 
         mockMvc.perform(get(BEER_PATH)
                 .accept(MediaType.APPLICATION_JSON))

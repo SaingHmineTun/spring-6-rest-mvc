@@ -22,5 +22,6 @@ public interface BeerService {
 
     Optional<BeerDTO> updateBeerContentById(UUID uuid, BeerDTO beer);
 
-    List<BeerDTO> getBeerByQuery(String beerName, BeerStyle beerStyle, Boolean showInventory);
+
+    List<BeerDTO> getBeerByQuery(String beerName, BeerStyle beerStyle, Boolean showInventory, Integer pageNumber, Integer pageSize);
 }

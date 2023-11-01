@@ -142,7 +142,7 @@ public class BeerServiceImpl implements BeerService {
     }
 
     @Override
-    public List<BeerDTO> getBeerByQuery(String beerName, BeerStyle beerStyle, Boolean showInventory){
+    public List<BeerDTO> getBeerByQuery(String beerName, BeerStyle beerStyle, Boolean showInventory, Integer pageNumber, Integer pageSize){
         return new ArrayList<>(beerMap.values());
     }
 }
