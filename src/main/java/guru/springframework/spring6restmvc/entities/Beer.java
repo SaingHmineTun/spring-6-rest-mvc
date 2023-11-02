@@ -19,6 +19,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Set;
 import java.util.UUID;
 
 @Data
@@ -57,4 +58,10 @@ public class Beer {
 //    @LastModifiedDate
     @UpdateTimestamp
     private LocalDateTime updateDate;
+    @ManyToMany
+    @JoinTable(name = "beer_category",
+            joinColumns = @JoinColumn(name = "beer_id"),
+            inverseJoinColumns = @JoinColumn(name = "category_id")
+    )
+    private Set<Category> categories;
 }
