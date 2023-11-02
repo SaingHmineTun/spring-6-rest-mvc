@@ -58,6 +58,11 @@ public class Beer {
 //    @LastModifiedDate
     @UpdateTimestamp
     private LocalDateTime updateDate;
+
+
+    @OneToMany(mappedBy = "beer")
+    private Set<BeerOrderLine> beerOrderLines;
+
     @ManyToMany
     @JoinTable(name = "beer_category",
             joinColumns = @JoinColumn(name = "beer_id"),
