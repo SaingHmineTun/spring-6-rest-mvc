@@ -77,6 +77,15 @@ public class BeerOrder {
     private Set<BeerOrderLine> beerOrderLines;
     @OneToOne
     @Cascade(CascadeType.PERSIST) // Save it with beerOrder at the same time
+    /*
+    Hibernate cascade types
+    ALL - propagates all operations
+    PERSIST - will also save child objects
+    MERGE - merge copies the state of a given object to the persistent object
+    REMOVE - cascade delete operations to child objects
+    REFRESH - cascade refresh operations to child objects
+    DETACH - detaches child objects from persistence context
+     */
     private BeerOrderShipment beerOrderShipment;
 
     public void setCustomer(Customer customer) {
